@@ -1,0 +1,12 @@
+.vscode
+__pycache__
+__init__.py
+*.pyc
+*.gv
+*.pdf
+*normal
+*reduction
+*.png
+*.sh
+experiments/
+data/
