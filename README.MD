@@ -2,8 +2,8 @@
 Code accompanying the paper
 
 ***Stabilizing Differentiable Architecture Search via Perturbation-based Regularization***
-
 Xiangning Chen, Cho-Jui Hsieh
+
 This code is based on the implementation of [DARTS](https://github.com/quark0/darts), [NAS-Bench-1Shot1](https://github.com/automl/nasbench-1shot1) and [RobustDARTS](https://github.com/MetaAnonym/RobustDARTS).
 
 ![](fig.png)
