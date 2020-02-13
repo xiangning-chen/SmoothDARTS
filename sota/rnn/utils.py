@@ -38,9 +38,9 @@ def get_batch(source, i, args, seq_len=None, evaluation=False):
 
 def create_exp_dir(path, scripts_to_save=None):
     if not os.path.exists(path):
-        os.mkdir(path)
-
+        os.makedirs(path)
     print('Experiment dir : {}'.format(path))
+    
     if scripts_to_save is not None:
         os.mkdir(os.path.join(path, 'scripts'))
         for script in scripts_to_save:
