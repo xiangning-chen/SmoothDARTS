@@ -24,9 +24,9 @@ Then insert its path to ```nasbench_analysis/eval_darts_one_shot_model_in_nasben
 
 * Search for CNN cells (4 spaces and 3 datasets to choose from):
 
-```SDARTS-RS: cd sota/cnn && python train_search.py --search_space=s1 --dataset=cifar10 --perturb_alpha=random```
+```SDARTS-RS: cd sota/cnn && python train_search.py --search_space=s1 --perturb_alpha=random```
 
-```SDARTS-ADV: cd sota/cnn && python train_search.py --search_space=s1 --dataset=cifar10 --perturb_alpha=pgd_linf```
+```SDARTS-ADV: cd sota/cnn && python train_search.py --search_space=s1 --perturb_alpha=pgd_linf```
 
 * Search for RNN cells:
 
