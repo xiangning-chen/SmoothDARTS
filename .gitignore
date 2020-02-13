@@ -6,7 +6,6 @@ __init__.py
 *.pdf
 *normal
 *reduction
-*.png
 *.sh
 experiments/
 data/
