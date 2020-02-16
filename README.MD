@@ -7,6 +7,19 @@ This code is based on the implementation of [DARTS](https://github.com/quark0/da
 
 ![](fig.png)
 
+If you find this code useful in your research please cite
+
+```
+@misc{chen2020stabilizing,
+    title={Stabilizing Differentiable Architecture Search via Perturbation-based Regularization},
+    author={Xiangning Chen and Cho-Jui Hsieh},
+    year={2020},
+    eprint={2002.05283},
+    archivePrefix={arXiv},
+    primaryClass={cs.LG}
+}
+```
+
 ## Datasets
 Instructions for acquiring PTB is [here](https://github.com/salesforce/awd-lstm-lm/blob/master/getdata.sh). 
 While CIFAR-10, CIFAR-100 and SVHN can be automatically downloaded by torchvision.
