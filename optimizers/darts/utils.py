@@ -148,6 +148,24 @@ def save_checkpoint(state, is_best, save):
         shutil.copyfile(filename, best_filename)
 
 
+def load_checkpoint(model, optimizer, save):
+    filename = os.path.join(save, 'checkpoint.pth.tar')
+    start_epoch = 0
+    if os.path.isfile(filename):
+        print("=> loading checkpoint '{}'".format(filename))
+        checkpoint = torch.load(filename)
+        start_epoch = checkpoint['epoch']
+        best_acc_top1 = checkpoint['best_acc_top1']
+        model.load_state_dict(checkpoint['state_dict'])
+        optimizer.load_state_dict(checkpoint['optimizer'])
+        print("=> loaded checkpoint '{}' (epoch {})"
+              .format(filename, checkpoint['epoch']))
+    else:
+        print("=> no checkpoint found at '{}'".format(filename))
+    
+    return model, optimizer, start_epoch, best_acc_top1
+
+
 def save(model, model_path):
     torch.save(model.state_dict(), model_path)
 
