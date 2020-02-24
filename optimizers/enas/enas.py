@@ -57,7 +57,7 @@ parser.add_argument('--entropy_weight', type=float, default=0.1)
 parser.add_argument('--bl_dec', type=float, default=0.99)
 args = parser.parse_args()
 
-save_dir = '../../experiments/enas/search_{}_{}_{}'.format(
+save_dir = '../../experiments/enas_trans/search_{}_{}_{}'.format(
     time.strftime("%Y%m%d-%H%M%S"), args.search_space, args.seed)
 if not os.path.exists(save_dir):
     os.makedirs(save_dir)
