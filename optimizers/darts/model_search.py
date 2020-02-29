@@ -65,7 +65,7 @@ class Cell(nn.Module):
         # Number of input channels is dependent on whether it is the first layer or not. Any subsequent layer has
         # C_in * (steps + 1) input channels because the output is a concatenation of the input tensor and all
         # choice block outputs
-        C_in = C_prev if layer == 0 else C_prev * (steps + 1)
+        C_in = C_prev if layer == 0 else C_prev * steps
 
         # Create the choice block and the input
         for i in range(self._steps):
@@ -74,7 +74,7 @@ class Cell(nn.Module):
             self._input_projections.append(ConvBnRelu(C_in=C_in, C_out=C, kernel_size=1, stride=1, padding=0))
 
         # Add one more input preprocessing for edge from input to output of the cell
-        self._input_projections.append(ConvBnRelu(C_in=C_in, C_out=C, kernel_size=1, stride=1, padding=0))
+        self._input_projections.append(ConvBnRelu(C_in=C_in, C_out=C * self._steps, kernel_size=1, stride=1, padding=0))
 
     def forward(self, s0, weights, output_weights, input_weights):
         # Adaption to NASBench
@@ -100,7 +100,7 @@ class Cell(nn.Module):
 
         # Add projected input to the state
         # https://github.com/google-research/nasbench/blob/master/nasbench/lib/model_builder.py#L328
-        states.insert(0, self._input_projections[-1](s0))
+        input_to_output_edge = self._input_projections[-1](s0)
         assert (len(input_weights) == 0, 'Something went wrong here.')
 
         if output_weights is None:
@@ -111,7 +111,7 @@ class Cell(nn.Module):
 
         # Concatenate to form output tensor
         # https://github.com/google-research/nasbench/blob/master/nasbench/lib/model_builder.py#L325
-        return torch.cat(tensor_list, dim=1)
+        return output_weights[0][0] * input_to_output_edge + torch.cat(tensor_list, dim=1)
 
 
 class Network(nn.Module):
@@ -136,11 +136,10 @@ class Network(nn.Module):
                 # Double the number of channels after each down-sampling step
                 # Down-sample in forward method
                 C_curr *= 2
-
             cell = Cell(steps=self._steps, C_prev=C_prev, C=C_curr, layer=i, search_space=search_space)
             self.cells += [cell]
             C_prev = C_curr
-        self.postprocess = ReLUConvBN(C_in=C_prev * (self._steps + 1), C_out=C_curr, kernel_size=1, stride=1, padding=0,
+        self.postprocess = ReLUConvBN(C_in=C_prev * self._steps, C_out=C_curr, kernel_size=1, stride=1, padding=0,
                                       affine=False)
 
         self.classifier = nn.Linear(C_prev, num_classes)

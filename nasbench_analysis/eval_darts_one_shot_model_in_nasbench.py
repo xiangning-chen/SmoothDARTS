@@ -8,19 +8,16 @@ import torch
 import torch.nn.functional as F
 from nasbench import api
 
-import sys
-
 from nasbench_analysis.search_spaces.search_space_1 import SearchSpace1
 from nasbench_analysis.search_spaces.search_space_2 import SearchSpace2
 from nasbench_analysis.search_spaces.search_space_3 import SearchSpace3
 from nasbench_analysis.utils import get_top_k, INPUT, OUTPUT, CONV1X1, NasbenchWrapper, natural_keys
-from nasbench_analysis.utils import upscale_to_nasbench_format
 from optimizers.darts.genotypes import PRIMITIVES
 
-# from scipy.special import softmax
 
 nasbench = NasbenchWrapper(
-    dataset_file='path_to_threcord')
+    dataset_file='/nfs/data/xiangning/data/nasbench_only108.tfrecord')
+
 
 def softmax(weights, axis=-1):
     return F.softmax(torch.Tensor(weights), axis).data.cpu().numpy()
@@ -41,29 +38,6 @@ def get_directory_list(path):
             directory_list += get_directory_list(new_path)
     return directory_list
 
-
-def eval_model(config, model):
-    if not config['search_space'] == '3':
-        adjacency_matrix = upscale_to_nasbench_format(model[0])
-        node_list = [INPUT, *model[1], CONV1X1, OUTPUT]
-    
-    else:
-        adjacency_matrix = model[0]
-        node_list = [INPUT, *model[1], OUTPUT]
-    
-    # Convert the adjacency matrix in format for nasbench
-    adjacency_list = adjacency_matrix.astype(np.int).tolist()
-    model_spec = api.ModelSpec(matrix=adjacency_list, ops=node_list)
-    # Query nasbench
-    data = nasbench.query(model_spec)
-    valid_error, test_error, runtime, params = [], [], [], []
-    for item in data:
-        test_error.append(1 - item['test_accuracy'])
-        valid_error.append(1 - item['validation_accuracy'])
-        runtime.append(item['training_time'])
-        params.append(item['trainable_parameters'])
-    return test_error, valid_error, runtime, params
-    
 
 def eval_one_shot_model(config, model):
     model_list = pickle.load(open(model, 'rb'))
@@ -165,17 +139,3 @@ def eval_directory(path):
     with open(os.path.join(path, 'one_shot_test_errors.obj'), 'wb') as fp:
         pickle.dump(test_errors, fp)
 
-
-def main():
-    directories = get_directory_list("experiments/darts_trans/")
-    directories.sort(key=natural_keys)
-    for directory in directories:
-        print(directory)
-        try:
-            eval_directory(directory)
-        except Exception as e:
-            print('error', e, directory)
-
-
-if __name__ == '__main__':
-    main()

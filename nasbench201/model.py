@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import numpy as np
 from copy import deepcopy
 import math, random
 import warnings
@@ -195,6 +196,25 @@ class Network(nn.Module):
     logits = self(input, updateType=updateType)
     return self._criterion(logits, target)
   
+  def binarization(self):
+    self._save_arch_parameters()
+    m, n = self._arch_parameters.size()
+    maxIndexs = self._arch_parameters.data.cpu().numpy().argmax(axis=1)
+    self._arch_parameters.data = self.proximal_step(self._arch_parameters, maxIndexs)
+  
+  def proximal_step(self, var, maxIndexs=None):
+    values = var.data.cpu().numpy()
+    m, n = values.shape
+    alphas = []
+    for i in range(m):
+      for j in range(n):
+        if j == maxIndexs[i]:
+          alphas.append(values[i][j].copy())
+          values[i][j] = 1
+        else:
+          values[i][j] = 0
+    return torch.Tensor(values).cuda()
+  
   def _save_arch_parameters(self):
     self._saved_arch_parameters = self._arch_parameters.clone()
   
@@ -233,7 +253,7 @@ class Network(nn.Module):
     logits = self.classifier(out)
 
     return logits
-
+  
 
 def distill(result):
   result = result.split('\n')
@@ -241,14 +261,14 @@ def distill(result):
   cifar100 = result[7].replace(' ', '').split(':')
   imagenet16 = result[9].replace(' ', '').split(':')
 
-  cifar10_train = float(cifar10[1].strip(',test')[-7:-2])
-  cifar10_test = float(cifar10[2][-7:-2])
-  cifar100_train = float(cifar100[1].strip(',valid')[-7:-2])
-  cifar100_valid = float(cifar100[2].strip(',test')[-7:-2])
-  cifar100_test = float(cifar100[3][-7:-2])
-  imagenet16_train = float(imagenet16[1].strip(',valid')[-7:-2])
-  imagenet16_valid = float(imagenet16[2].strip(',test')[-7:-2])
-  imagenet16_test = float(imagenet16[3][-7:-2])
+  cifar10_train = float(cifar10[1].strip(',test')[-7:-2].strip('='))
+  cifar10_test = float(cifar10[2][-7:-2].strip('='))
+  cifar100_train = float(cifar100[1].strip(',valid')[-7:-2].strip('='))
+  cifar100_valid = float(cifar100[2].strip(',test')[-7:-2].strip('='))
+  cifar100_test = float(cifar100[3][-7:-2].strip('='))
+  imagenet16_train = float(imagenet16[1].strip(',valid')[-7:-2].strip('='))
+  imagenet16_valid = float(imagenet16[2].strip(',test')[-7:-2].strip('='))
+  imagenet16_test = float(imagenet16[3][-7:-2].strip('='))
 
   return cifar10_train, cifar10_test, cifar100_train, cifar100_valid, \
     cifar100_test, imagenet16_train, imagenet16_valid, imagenet16_test

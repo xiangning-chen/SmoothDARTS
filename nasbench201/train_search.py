@@ -17,7 +17,6 @@ import torch.backends.cudnn as cudnn
 from torch.autograd import Variable
 from nasbench201.model import Network, distill
 from optimizers.darts.architect import Architect
-from sota.cnn.spaces import spaces_dict
 
 from attacker.perturb import Linf_PGD_alpha, Random_alpha
 
