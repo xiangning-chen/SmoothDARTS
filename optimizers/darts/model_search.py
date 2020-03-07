@@ -107,7 +107,7 @@ class Cell(nn.Module):
             tensor_list = states
         else:
             # Create weighted concatenation at the output of the cell
-            tensor_list = [w * t for w, t in zip(output_weights[0], states)]
+            tensor_list = [w * t for w, t in zip(output_weights[0][1:], states)]
 
         # Concatenate to form output tensor
         # https://github.com/google-research/nasbench/blob/master/nasbench/lib/model_builder.py#L325
