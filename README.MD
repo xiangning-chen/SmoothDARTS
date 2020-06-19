@@ -1,5 +1,5 @@
 # SmoothDARTS (SDARTS)
-Code accompanying the paper  
+Code accompanying our ICML'2020 paper  
 ***Stabilizing Differentiable Architecture Search via Perturbation-based Regularization*** [paper](https://arxiv.org/abs/2002.05283)  
 Xiangning Chen, Cho-Jui Hsieh
 
