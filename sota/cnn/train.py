@@ -123,15 +123,7 @@ def main():
 
     for epoch in range(args.epochs):
         scheduler.step()
-        lr = scheduler.get_lr()[0]
-        if args.cutout:
-            # increase the cutout probability linearly throughout search
-            train_transform.transforms[-1].cutout_prob = args.cutout_prob * \
-                epoch / (args.epochs - 1)
-            logging.info('epoch %d lr %e cutout_prob %e', epoch, lr,
-                         train_transform.transforms[-1].cutout_prob)
-        else:
-            logging.info('epoch %d lr %e', epoch, lr)
+        logging.info('epoch %d lr %e', epoch, scheduler.get_lr()[0])
         model.drop_path_prob = args.drop_path_prob * epoch / args.epochs
 
         train_acc, train_obj = train(train_queue, model, criterion, optimizer)
