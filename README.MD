@@ -55,5 +55,5 @@ If you find this code useful in your research please cite
 
 ## Related Publications
 * Xiangning Chen, Ruochen Wang, Minhao Cheng, Xiaocheng Tang, Cho-Jui Hsieh. [DrNAS: Dirichlet Neural Architecture Search](https://openreview.net/forum?id=9FWas6YbmB3). ICLR 2021. [Code](https://github.com/xiangning-chen/DrNAS).
-* Ruochen Wang, Minhao Cheng, Xiangning Chen, Xiaocheng Tang, Cho-Jui Hsieh. [Rethinking Architecture Selection in Differentiable NAS](https://openreview.net/forum?id=PKubaeJkw3). ICLR 2021 (oral).
+* Ruochen Wang, Minhao Cheng, Xiangning Chen, Xiaocheng Tang, Cho-Jui Hsieh. [Rethinking Architecture Selection in Differentiable NAS](https://openreview.net/forum?id=PKubaeJkw3). ICLR 2021 (oral). [Code](https://github.com/ruocwang/darts-pt).
 
